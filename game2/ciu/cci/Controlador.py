@@ -28,8 +28,13 @@ class Controlador():
         rect = imagem.get_rect().move(posicao.eixox, posicao.eixoy)
         return rect
 
-    def exibir_obstaculo(self, posicao):
+    def exibir_peixeespada(self, posicao):
         imagem = self.telajogo.exibe_imagem(self.caminhoimagem, "peixeespada.png", posicao)
+        rect = imagem.get_rect().move(posicao.eixox, posicao.eixoy)
+        return rect
+
+    def exibir_baiacu(self, posicao):
+        imagem = self.telajogo.exibe_imagem(self.caminhoimagem, "baiacu.png", posicao)
         rect = imagem.get_rect().move(posicao.eixox, posicao.eixoy)
         return rect
 
@@ -49,18 +54,22 @@ class Controlador():
             self.exibir_vida(x, 0)
             x += 40
 
+    def imprime_obstaculos(self):
+        rect1 = self.exibir_personagem(self.apljogo.personagem.posicao)
+        for obs in self.apljogo.obstaculos:
+            if obs.nome == "peixeespada":
+                rect2 = self.exibir_peixeespada(obs.posicao)
+            elif obs.nome == "baiacu":
+                rect2 = self.exibir_baiacu(obs.posicao)
+            self.apljogo.verifica_colisao(rect1, rect2)
+
     def jogo(self):
         self.apljogo.config()
         while True:
+            self.apljogo.novo += 1
             self.apljogo.jogar()
-
             self.exibir_tela_jogo()
-            rect1 = self.exibir_personagem(self.apljogo.personagem.posicao)
-            rect2 = self.exibir_obstaculo(self.apljogo.obstaculo.posicao)
-            rect3 = self.exibir_obstaculo(self.apljogo.obstaculo2.posicao)
-            self.apljogo.verifica_colisao(rect1, rect2)
-            self.apljogo.verifica_colisao(rect1, rect3)
-
+            self.imprime_obstaculos()
             self.exibir_pontuacao(self.apljogo.pontos)
             self.controla_vida()
             if self.apljogo.fimdejogo == True:
